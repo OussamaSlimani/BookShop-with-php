@@ -12,46 +12,30 @@ try {
      die("Error: " . $e->getMessage());
 }
 
-// Check if category_id is provided in the URL
-if (!isset($_GET['category_id'])) {
-     // Redirect to the category list page if category_id is not provided
-     header('Location: categories.php');
-     exit();
-}
+// Fetch data with pagination
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$limit = 10; // Number of rows per page
 
-$category_id = $_GET['category_id'];
+$offset = ($page - 1) * $limit;
+$query = "SELECT c.*, u.full_name AS client_name, b.title AS book_title
+          FROM commands c
+          LEFT JOIN users u ON c.user_id = u.user_id
+          LEFT JOIN books b ON c.book_id = b.book_id
+          LIMIT {$limit} OFFSET {$offset}";
 
-// Fetch the category details from the database
-$stmt = $pdo->prepare("SELECT * FROM categories WHERE category_id = ?");
-$stmt->execute([$category_id]);
-$category = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $pdo->query($query);
+$commands = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if (!$category) {
-     // Redirect to the category list page if the category doesn't exist
-     header('Location: categories.php');
-     exit();
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-     // Handle form submission
-     $name = $_POST['name'];
-     $description = $_POST['description'];
-
-     // Validate input (you can add more validation as needed)
-
-     // Update the category in the database
-     $stmt = $pdo->prepare("UPDATE categories SET name = ?, description = ? WHERE category_id = ?");
-     $stmt->execute([$name, $description, $category_id]);
-
-     // Redirect to the category list page
-     header('Location: categories.php');
-     exit();
-}
+// Pagination - Get total rows count
+$totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
      <meta charset="utf-8" />
-     <title>Categories</title>
+     <title>Manage Books</title>
      <meta content="width=device-width, initial-scale=1.0" name="viewport" />
      <meta content="" name="keywords" />
      <meta content="" name="description" />
@@ -80,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+
      <!-- navbar -->
      <nav class="navbar">
           <div class="logo_item">
@@ -91,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      </nav>
 
      <!-- sidebar -->
-     <!-- sidebar -->
      <nav class="sidebar">
           <div class="menu_content">
                <ul class="menu_items">
@@ -101,13 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2 active">
                          <a href="../book/books.php">
-                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
+                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Product
                          </a>
                     </li>
                     <!-- End -->
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="categories.php"> <i class="bi bi-card-list me-2"></i>Categories</a>
+                         <a href="#"> <i class="bi bi-card-list me-2"></i>Category</a>
                     </li>
                     <!-- End -->
                </ul>
@@ -116,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                          <h4>Users</h4>
                     </div>
                     <li class="item me-2 p-2 m-2">
-                         <a href="../user/users.php"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
+                         <a href="#"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
                     </li>
                </ul>
 
@@ -126,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="../slider/sliders.php">
+                         <a href="#">
                               <i class="bi bi-card-image me-2"></i>Choose pictures
                          </a>
                     </li>
@@ -148,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="menu_title mt-4"></div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2 fw-bold">
-                         <a href="../index.php"> <i class="bi bi-arrow-left me-2"></i>Home </a>
+                         <a href="#"> <i class="bi bi-arrow-left me-2"></i>Home </a>
                     </li>
                     <!-- End -->
                </ul>
@@ -156,24 +140,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      </nav>
 
      <div class="container-admin">
-          <div class="container" id="admin_component">
-               <h2>Edit Category</h2>
-
-               <!-- Category Form -->
-               <form method="post" action="edit_category.php?category_id=<?= $category_id ?>">
-                    <div class="mb-3">
-                         <label for="name" class="form-label">Category Name</label>
-                         <input type="text" class="form-control" id="name" name="name" value="<?= $category['name'] ?>" required>
-                    </div>
-                    <div class="mb-3">
-                         <label for="description" class="form-label">Category Description</label>
-                         <textarea class="form-control" id="description" name="description" rows="3" required><?= $category['description'] ?></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Category</button>
-               </form>
+          <!-- Manage Products Start -->
+          <div class="table-responsive">
+               <table class="table">
+                    <thead>
+                         <tr>
+                              <th class="text-center">#</th>
+                              <th>Book Title</th>
+                              <th>Client Full Name</th>
+                              <th>Total Price</th>
+                              <th>Valid</th>
+                              <th class="text-right">Actions</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                         <?php foreach ($commands as $command) : ?>
+                              <?php
+                              // Check if the command is not valid
+                              $rowClass = $command['valid'] ? '' : 'bg-danger text-white';
+                              ?>
+                              <tr class="<?= $rowClass ?>">
+                                   <td class="text-center"><?= $command['command_id'] ?></td>
+                                   <td><?= $command['book_title'] ?></td>
+                                   <td><?= $command['client_name'] ?></td>
+                                   <td><?= $command['total_price'] ?></td>
+                                   <td><?= $command['valid'] ? 'Yes' : 'No' ?></td>
+                                   <!-- Action buttons -->
+                                   <td class="td-actions text-right">
+                                        <a href='check_command.php?command_id=<?= $command['command_id'] ?>'><i class='fa fa-check me-2'></i></a>
+                                   </td>
+                              </tr>
+                         <?php endforeach; ?>
+                    </tbody>
+               </table>
           </div>
      </div>
 
+
+
+
+     <!-- Pagination Section -->
+     <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+               <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>" tabindex="-1">Previous</a>
+               </li>
+               <?php for ($i = 1; $i <= ceil($totalRows / $limit); $i++) : ?>
+                    <li class="page-item <?= $page == $i ? 'active' : '' ?>">
+                         <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                    </li>
+               <?php endfor; ?>
+               <li class="page-item <?= $page >= ceil($totalRows / $limit) ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
+               </li>
+          </ul>
+     </nav>
+     </div>
+     <!-- Admin Dashboard End -->
+     </div>
      <!-- JavaScript -->
      <script>
           const sidebar = document.querySelector(".sidebar");

@@ -1,3 +1,91 @@
+<?php
+session_start();
+
+// Database connection parameters
+$DB_NAME = 'bookshop';
+$DB_USER = 'root';
+$DB_PASS = '';
+$DB_HOST = 'localhost';
+
+// PDO connection
+try {
+  $pdo = new PDO("mysql:host={$DB_HOST};dbname={$DB_NAME}", $DB_USER, $DB_PASS);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+  die("Error: " . $e->getMessage());
+}
+
+function getBookDetails($bookId)
+{
+  // Include your database connection logic here
+  global $pdo;
+
+  // Implement the query to fetch book details based on book_id
+  $query = "SELECT * FROM books WHERE book_id = :book_id";
+  $stmt = $pdo->prepare($query);
+  $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+  $stmt->execute();
+
+  // Fetch the book details as an associative array
+  return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Function to calculate the total price for a specific item
+function calculateItemTotal($bookDetails, $quantity)
+{
+  return $bookDetails['price'] * $quantity;
+}
+
+// Check if the cart is empty
+$cartIsEmpty = empty($_SESSION['cart']);
+$cartItems = $cartIsEmpty ? [] : $_SESSION['cart'];
+
+
+// total price variable
+$totalPrice = 0;
+foreach ($cartItems as $bookId => $quantity) {
+  $bookDetails = getBookDetails($bookId);
+  $itemTotal = calculateItemTotal($bookDetails, $quantity);
+  $totalPrice += $itemTotal;
+}
+
+?>
+
+<!-- Add JavaScript to handle quantity update and item removal -->
+<script>
+  function updateQuantity(bookId, change) {
+    // Send AJAX request to update the quantity in the session
+    $.ajax({
+      type: "POST",
+      url: "update_quantity.php",
+      data: {
+        book_id: bookId,
+        change: change
+      },
+      success: function(response) {
+        // Reload the page or update the specific elements as needed
+        location.reload();
+      }
+    });
+  }
+
+  function removeItem(bookId) {
+    // Send AJAX request to remove the item from the session
+    $.ajax({
+      type: "POST",
+      url: "remove_item.php",
+      data: {
+        book_id: bookId
+      },
+      success: function(response) {
+        // Reload the page or update the specific elements as needed
+        location.reload();
+      }
+    });
+  }
+</script>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,14 +109,14 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
   <!-- Libraries Stylesheet -->
-  <link href="lib/animate/animate.min.css" rel="stylesheet" />
-  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+  <link href="../lib/animate/animate.min.css" rel="stylesheet" />
+  <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
   <!-- Customized Bootstrap Stylesheet -->
-  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- Template Stylesheet -->
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -38,7 +126,33 @@
   </div>
   <!-- Spinner End -->
 
-  <!-- Navbar Start -->
+  <!-- ====================== Navbar Start ===================== -->
+  <?php
+  session_start();
+
+  if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+  } else {
+    $user_id = "you should be logged in";
+  }
+
+  if (isset($_POST['logout'])) {
+    session_unset();
+    session_destroy();
+
+    header('Location: index.php');
+    exit();
+  }
+  if (isset($_POST['login'])) {
+    session_unset();
+    session_destroy();
+
+    header('Location: login.php');
+    exit();
+  }
+  ?>
+
+  <!--  -->
   <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
     <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
       <a href="index.html" class="navbar-brand ms-lg-0">
@@ -55,25 +169,29 @@
           <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
             <div class="dropdown-menu m-0">
-              <a href="service.html" class="dropdown-item">Biographie</a>
-              <a href="donate.html" class="dropdown-item">Literature</a>
-              <a href="team.html" class="dropdown-item">Adventure</a>
-              <a href="testimonial.html" class="dropdown-item">Education</a>
-              <a href="404.html" class="dropdown-item">Religion</a>
-              <a href="404.html" class="dropdown-item">Thriller</a>
-              <a href="404.html" class="dropdown-item">Funtasy </a>
-              <a href="404.html" class="dropdown-item">Romance</a>
-              <a href="404.html" class="dropdown-item">Historical </a>
+              <?php
+              foreach ($categories as $category) {
+                echo "<a href='category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
+              }
+              ?>
             </div>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="bi bi-cart"></i>Shopping cart</a>
+            <a class="nav-link" href="cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart
+              <span class="cart-notification">0</span>
+            </a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
-            <a class="btn btn-primary nav-link px-2 py-2" href="#">Logout</a>
+            <form method="POST" action="">
+              <?php if ($user_id != "you should be logged in") : ?>
+                <button type="submit" name="logout" class="btn btn-primary nav-link px-2 py-2">Logout</button>
+              <?php else : ?>
+                <button type="submit" name="login" class="btn btn-primary nav-link px-2 py-2">Login</button>
+              <?php endif; ?>
+            </form>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -87,7 +205,7 @@
       </div>
     </nav>
   </div>
-  <!-- Navbar End -->
+  <!-- ====================== Navbar End ===================== -->
 
   <!-- Shopping Card Start -->
   <section class="container-fluid p-0 mb-5 mt-5 pt-4">
@@ -96,126 +214,83 @@
         <div class="col">
           <div class="card p-3 mb-3" style="border-radius: 10px">
             <div class="card-body p-4">
-              <div class="row">
-                <div class="col-lg-7">
-                  <h4 class="mb-3">
-                    <a href="#!" class="text-body">
-                      <i class="fas fa-long-arrow-alt-left me-2"></i>Continue
-                      shopping
-                    </a>
-                  </h4>
-                  <hr />
+              <hr />
 
-                  <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                      <p class="mb-1 fw-bold">Shopping cart</p>
-                    </div>
-                  </div>
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <p class="mb-1 fw-bold">Shopping cart</p>
+                </div>
+              </div>
 
-                  <!-- Item -->
+              <?php if ($cartIsEmpty) : ?>
+                <p>Your shopping cart is empty.</p>
+              <?php else : ?>
+                <!-- Loop through cart items and display them -->
+                <?php foreach ($cartItems as $bookId => $quantity) : ?>
+                  <?php
+                  // Fetch book details based on book_id
+                  $bookDetails = getBookDetails($bookId);
+                  ?>
                   <div class="card mb-3">
                     <div class="card-body">
                       <div class="d-flex justify-content-between">
                         <div class="d-flex flex-row align-items-center">
                           <div>
-                            <img src="img/book1.png" class="img-fluid rounded-3" alt="Shopping item" style="width: 70px" />
+                            <img src="<?php echo $bookDetails['image_path']; ?>" class="img-fluid rounded-3" alt="Shopping item" style="width: 70px" />
                           </div>
                           <div class="ms-3">
-                            <h4>Book name</h4>
+                            <h4><?php echo $bookDetails['title']; ?></h4>
+                            <!-- Display additional book details as needed -->
+                            <p>Author: <?php echo $bookDetails['author']; ?></p>
+                            <p>Price: $<?php echo $bookDetails['price']; ?></p>
                           </div>
                         </div>
                         <div class="d-flex flex-row align-items-center">
                           <div class="d-flex flex-row">
-                            <button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                              <i class="fas fa-minus"></i>
-                            </button>
-
-                            <input id="form1" min="1" name="quantity" value="2" type="number" class="form-control form-control-sm" style="width: 50px" />
-
-                            <button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                              <i class="fas fa-plus"></i>
-                            </button>
+                            <!-- Add quantity handling -->
+                            <button class="btn btn-link px-2" onclick="updateQuantity(<?php echo $bookId; ?>, -1)">-</button>
+                            <input id="quantity_<?php echo $bookId; ?>" min="1" name="quantity" value="<?php echo $quantity; ?>" type="number" class="form-control form-control-sm" style="width: 50px" />
+                            <button class="btn btn-link px-2" onclick="updateQuantity(<?php echo $bookId; ?>, 1)">+</button>
                           </div>
                           <div>
-                            <h4 class="mb-0 px-4">$900</h4>
+                            <h4 class="mb-0 px-4">$<?php echo calculateItemTotal($bookDetails, $quantity); ?></h4>
                           </div>
-                          <a href="#"><i class="fas fa-trash-alt"></i></a>
+                          <!-- Add remove item functionality -->
+                          <a href="#" onclick="removeItem(<?php echo $bookId; ?>)"><i class="fas fa-trash-alt"></i></a>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <!-- Item -->
-                </div>
+                <?php endforeach; ?>
+                <!-- End loop -->
+              <?php endif; ?>
 
-                <div class="col-lg-5">
-                  <div class="card bg-light" style="border-radius: 10px">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="mb-0">Card details</h4>
-                      </div>
-
-                      <form>
-                        <div class="form-group">
-                          <label for="cardType" class="form-label">Card type</label>
-                          <div class="d-flex mb-3">
-                            <input type="radio" id="mastercard" name="cardType" value="mastercard" />
-
-                            <label for="visa" class="me-2">
-                              <i class="fab fa-cc-visa fa-2x text-primary"></i>
-                            </label>
-
-                            <input type="radio" id="paypal" name="cardType" value="paypal" />
-                            <label for="paypal">
-                              <i class="fab fa-cc-paypal fa-2x text-primary"></i>
-                            </label>
-                          </div>
-                        </div>
-
-                        <div class="form-outline form-white mb-4">
-                          <input type="text" id="typeText" class="form-control form-control" size="17" placeholder="1234 5678 9012 3457" minlength="19" maxlength="19" style="border-radius: 5px" />
-                          <label class="form-label" for="typeText">Card Number</label>
-                        </div>
-
-                        <div class="row mb-4">
-                          <div class="col-md-6">
-                            <div class="form-outline form-white">
-                              <input type="text" id="typeExp" class="form-control form-control" placeholder="MM/YYYY" size="7" id="exp" minlength="7" maxlength="7" style="border-radius: 5px" />
-                              <label class="form-label" for="typeExp">Expiration</label>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-outline form-white">
-                              <input type="password" id="typeText" class="form-control form-control" placeholder="&#9679;&#9679;&#9679;" size="1" minlength="3" maxlength="3" style="border-radius: 5px" />
-                              <label class="form-label" for="typeText">CVV</label>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-
-                      <hr class="my-4" />
-
-                      <div class="d-flex justify-content-between mb-4">
-                        <p class="mb-2">Total</p>
-                        <p class="mb-2">$4818.00</p>
-                      </div>
-
-                      <button type="button" class="btn btn-primary btn-lg btn-block">
-                        <div class="d-flex justify-content-between">
-                          <span>Checkout
-                            <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-between mb-4">
+              <h4 class="mb-2">Total</h4>
+              <h4 class="mb-2">$<?php echo number_format($totalPrice, 2); ?></h4>
+
+              <!-- Checkout form -->
+              <form method="POST" action="process_checkout.php">
+                <input type="hidden" name="totalPrice" value="<?php echo $totalPrice; ?>">
+                <button type="submit" class="btn btn-primary">
+                  <div class="d-flex justify-content-between">
+                    <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
+                  </div>
+                </button>
+              </form>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
   </section>
   <!-- Shopping Card End -->
+
 
   <!-- Footer Start -->
   <div class="container-fluid bg-dark text-white-50 footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
@@ -282,14 +357,14 @@
   <!-- JavaScript Libraries -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="lib/wow/wow.min.js"></script>
-  <script src="lib/easing/easing.min.js"></script>
-  <script src="lib/waypoints/waypoints.min.js"></script>
-  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-  <script src="lib/parallax/parallax.min.js"></script>
+  <script src="../lib/wow/wow.min.js"></script>
+  <script src="../lib/easing/easing.min.js"></script>
+  <script src="../lib/waypoints/waypoints.min.js"></script>
+  <script src="../lib/owlcarousel/owl.carousel.min.js"></script>
+  <script src="../lib/parallax/parallax.min.js"></script>
 
   <!-- Template Javascript -->
-  <script src="js/main.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 
 </html>
