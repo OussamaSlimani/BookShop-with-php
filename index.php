@@ -152,9 +152,12 @@ $pdo = null;
               ?>
             </div>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="bi bi-cart"></i>Shopping cart</a>
+            <a class="nav-link" href="cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart
+              <span class="cart-notification">0</span>
+            </a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -297,7 +300,7 @@ $pdo = null;
                     <span style="text-decoration: line-through; color: red"><?php echo $book['price']; ?> TND</span>
                     <span style="color: green"><?php echo round($book['price'] - ($book['price'] / $book['promo']), 2); ?> TND</span>
                   </p>
-                  <a class="btn btn-primary py-2 px-2 mb-2" href="">
+                  <a class="btn btn-primary py-2 px-2 mb-2" onclick="addToCart(<?php echo $book['book_id']; ?>)">
                     Add to cart
                   </a>
                 </div>
@@ -504,6 +507,31 @@ $pdo = null;
 
   <!-- Template Javascript -->
   <script src="js/main.js"></script>
+
+  <script>
+    function addToCart(bookId) {
+      // Send AJAX request to add the item to the cart
+      $.ajax({
+        type: "POST",
+        url: "cart/add_to_cart.php", // Create this file to handle the server-side logic
+        data: {
+          book_id: bookId
+        },
+        success: function(response) {
+          // Update the cart icon notification
+          updateCartNotification(response);
+        }
+      });
+    }
+
+    function updateCartNotification(count) {
+      // Update the notification bubble on the cart icon
+      // You can use your preferred method to update the notification (e.g., jQuery)
+      $(".cart-notification").text(count);
+    }
+  </script>
+
+
 </body>
 
 </html>

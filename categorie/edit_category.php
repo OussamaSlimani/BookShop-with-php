@@ -91,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      </nav>
 
      <!-- sidebar -->
+     <!-- sidebar -->
      <nav class="sidebar">
           <div class="menu_content">
                <ul class="menu_items">
