@@ -80,14 +80,14 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2 active">
-                         <a href="#">
-                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Product
+                         <a href="../book/books.php">
+                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
                          </a>
                     </li>
                     <!-- End -->
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#"> <i class="bi bi-card-list me-2"></i>Category</a>
+                         <a href="categories.php"> <i class="bi bi-card-list me-2"></i>Categories</a>
                     </li>
                     <!-- End -->
                </ul>
@@ -96,7 +96,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                          <h4>Users</h4>
                     </div>
                     <li class="item me-2 p-2 m-2">
-                         <a href="#"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
+                         <a href="../user/users.php"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
                     </li>
                </ul>
 
@@ -106,7 +106,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#">
+                         <a href="../slider/sliders.php">
                               <i class="bi bi-card-image me-2"></i>Choose pictures
                          </a>
                     </li>
@@ -128,7 +128,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                     <div class="menu_title mt-4"></div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2 fw-bold">
-                         <a href="#"> <i class="bi bi-arrow-left me-2"></i>Home </a>
+                         <a href="../index.php"> <i class="bi bi-arrow-left me-2"></i>Home </a>
                     </li>
                     <!-- End -->
                </ul>
@@ -174,21 +174,24 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                </div>
 
                <!-- Pagination Section -->
-               <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                         <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                              <a class="page-link" href="?page=<?= $page - 1 ?>" tabindex="-1">Previous</a>
-                         </li>
-                         <?php for ($i = 1; $i <= ceil($totalRows / $limit); $i++) : ?>
-                              <li class="page-item <?= $page == $i ? 'active' : '' ?>">
-                                   <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+              <!-- Pagination Section -->
+               <!-- Pagination Section -->
+                    <nav aria-label="Page navigation example">
+                         <ul class="pagination justify-content-end">
+                              <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                                   <a class="page-link" href="<?= $page <= 1 ? '#' : '?page=' . ($page - 1) ?>" tabindex="-1">Previous</a>
                               </li>
-                         <?php endfor; ?>
-                         <li class="page-item <?= $page >= ceil($totalRows / $limit) ? 'disabled' : '' ?>">
-                              <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
-                         </li>
-                    </ul>
-               </nav>
+                              <?php for ($i = 1; $i <= ceil($totalRows / $limit); $i++) : ?>
+                                   <li class="page-item <?= $page == $i ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                   </li>
+                              <?php endfor; ?>
+                              <li class="page-item <?= $page >= ceil($totalRows / $limit) ? 'disabled' : '' ?>">
+                                   <a class="page-link" href="<?= $page >= ceil($totalRows / $limit) ? '#' : '?page=' . ($page + 1) ?>">Next</a>
+                              </li>
+                         </ul>
+                    </nav>
+
           </div>
           <!-- Admin Dashboard End -->
      </div>
