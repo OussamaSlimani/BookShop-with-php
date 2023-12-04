@@ -174,21 +174,24 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                </div>
 
                <!-- Pagination Section -->
-               <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                         <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                              <a class="page-link" href="?page=<?= $page - 1 ?>" tabindex="-1">Previous</a>
-                         </li>
-                         <?php for ($i = 1; $i <= ceil($totalRows / $limit); $i++) : ?>
-                              <li class="page-item <?= $page == $i ? 'active' : '' ?>">
-                                   <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+              <!-- Pagination Section -->
+               <!-- Pagination Section -->
+                    <nav aria-label="Page navigation example">
+                         <ul class="pagination justify-content-end">
+                              <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                                   <a class="page-link" href="<?= $page <= 1 ? '#' : '?page=' . ($page - 1) ?>" tabindex="-1">Previous</a>
                               </li>
-                         <?php endfor; ?>
-                         <li class="page-item <?= $page >= ceil($totalRows / $limit) ? 'disabled' : '' ?>">
-                              <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
-                         </li>
-                    </ul>
-               </nav>
+                              <?php for ($i = 1; $i <= ceil($totalRows / $limit); $i++) : ?>
+                                   <li class="page-item <?= $page == $i ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                   </li>
+                              <?php endfor; ?>
+                              <li class="page-item <?= $page >= ceil($totalRows / $limit) ? 'disabled' : '' ?>">
+                                   <a class="page-link" href="<?= $page >= ceil($totalRows / $limit) ? '#' : '?page=' . ($page + 1) ?>">Next</a>
+                              </li>
+                         </ul>
+                    </nav>
+
           </div>
           <!-- Admin Dashboard End -->
      </div>

@@ -87,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </a>
      </nav>
 
-     <!-- sidebar -->
-     <nav class="sidebar">
+    <!-- sidebar -->
+    <nav class="sidebar">
           <div class="menu_content">
                <ul class="menu_items">
                     <div class="menu_title">
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                </ul>
           </div>
      </nav>
-
+     
      <div class="container-admin">
           <div class="container" id="admin_component">
                <h2>Delete Category</h2>

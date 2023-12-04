@@ -1,10 +1,12 @@
 <?php
+
 // Database connection parameters
 $DB_NAME = 'bookshop';
 $DB_USER = 'root';
 $DB_PASS = '';
 $DB_HOST = 'localhost';
 
+// PDO connection
 try {
   $pdo = new PDO("mysql:host={$DB_HOST};dbname={$DB_NAME}", $DB_USER, $DB_PASS);
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -12,13 +14,17 @@ try {
   die("Error: " . $e->getMessage());
 }
 
+
+// categories
 $selectCategoriesSql = "SELECT * FROM categories";
 $selectCategoriesStmt = $pdo->query($selectCategoriesSql);
 $categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Check if book_id is set
 if (isset($_GET['book_id'])) {
   $book_id = $_GET['book_id'];
 
+  // Select book details
   $selectBookSql = "SELECT books.*, categories.name FROM books 
                   JOIN categories ON books.category_id = categories.category_id 
                   WHERE book_id = :book_id";
@@ -32,6 +38,16 @@ if (isset($_GET['book_id'])) {
     echo "Book not found!";
     exit;
   }
+
+  // Select reviews for the book along with user details
+  $selectReviewsSql = "SELECT reviews.*, users.full_name FROM reviews 
+                      JOIN users ON reviews.user_id = users.user_id 
+                      WHERE reviews.book_id = :book_id";
+
+  $selectReviewsStmt = $pdo->prepare($selectReviewsSql);
+  $selectReviewsStmt->bindParam(':book_id', $book_id);
+  $selectReviewsStmt->execute();
+  $reviews = $selectReviewsStmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
   echo "Book ID not provided!";
   exit;
@@ -62,14 +78,14 @@ if (isset($_GET['book_id'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
   <!-- Libraries Stylesheet -->
-  <link href="lib/animate/animate.min.css" rel="stylesheet" />
-  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+  <link href="./lib/animate/animate.min.css" rel="stylesheet" />
+  <link href="./lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
   <!-- Customized Bootstrap Stylesheet -->
-  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="./css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- Template Stylesheet -->
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="./css/style.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -78,32 +94,6 @@ if (isset($_GET['book_id'])) {
     <div class="spinner-grow text-primary" role="status"></div>
   </div>
   <!-- Spinner End -->
-
-  <!-- ====================== Navbar Start ===================== -->
-  <?php
-  session_start();
-
-  if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-  } else {
-    $user_id = "you should be logged in";
-  }
-
-  if (isset($_POST['logout'])) {
-    session_unset();
-    session_destroy();
-
-    header('Location: index.php');
-    exit();
-  }
-  if (isset($_POST['login'])) {
-    session_unset();
-    session_destroy();
-
-    header('Location: login.php');
-    exit();
-  }
-  ?>
 
   <!-- ====================== Navbar Start ===================== -->
   <?php
@@ -247,69 +237,36 @@ if (isset($_GET['book_id'])) {
   <!-- Books End -->
 
 
-  <!-- review Start -->
-  <div class="container-xxl py-6">
-    <div class="container">
-      <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px">
-        <h1 class="display-6 mb-5 text-border">Reviews</h1>
-      </div>
-      <div class="owl-carousel review-carousel wow fadeInUp" data-wow-delay="0.1s">
-        <div class="review-item rounded p-4">
-          <i class="fa fa-quote-left text-primary mb-3"></i>
-          <p>
-            Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor
-            stet amet eirmod eos labore diam
-          </p>
-          <div class="d-flex align-items-center">
-            <div class="ps-3">
-              <h6 class="mb-1">Client Name</h6>
-            </div>
-          </div>
+<!-- Review section -->
+<div class="owl-carousel review-carousel wow fadeInUp" data-wow-delay="0.1s">
+  <?php foreach ($reviews as $review): ?>
+    <div class="review-item rounded p-4">
+      <i class="fa fa-quote-left text-primary mb-3"></i>
+      <h3 class="mb-1"><?= $review['review_headline'] ?></h3>
+      <p><?= $review['review_text'] ?></p>
+      <div class="d-flex align-items-center">
+        <div class="ps-3">
+          <h6 class="mb-1"><?= $review['full_name'] ?></h6>
         </div>
-        <div class="review-item rounded p-4">
-          <i class="fa fa-quote-left text-primary mb-3"></i>
-          <p>
-            Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor
-            stet amet eirmod eos labore diam
-          </p>
-          <div class="d-flex align-items-center">
-            <div class="ps-3">
-              <h6 class="mb-1">Client Name</h6>
-            </div>
-          </div>
-        </div>
-        <div class="review-item rounded p-4">
-          <i class="fa fa-quote-left text-primary mb-3"></i>
-          <p>
-            Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor
-            stet amet eirmod eos labore diam
-          </p>
-          <div class="d-flex align-items-center">
-            <div class="ps-3">
-              <h6 class="mb-1">Client Name</h6>
-            </div>
-          </div>
-        </div>
-        <div class="review-item rounded p-4">
-          <i class="fa fa-quote-left text-primary mb-3"></i>
-          <p>
-            Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor
-            stet amet eirmod eos labore diam
-          </p>
-          <div class="d-flex align-items-center">
-            <div class="ps-3">
-              <h6 class="mb-1">Client Name</h6>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="d-flex justify-content-center mt-4">
-        <button type="button" class="btn btn-primary py-2 mt-5 text-center">
-          Add review
-        </button>
       </div>
     </div>
-  </div>
+  <?php endforeach; ?>
+</div>
+
+<!-- Add review button -->
+<div class="d-flex justify-content-center mt-4">
+  <?php
+  // Check if the user is logged in (you need to implement the logic for this)
+  $isLoggedIn = true; // replace this with your actual check
+
+  if ($isLoggedIn) {
+      echo '<a href="add_review.php?user_id=' . $user_id . '&book_id=' . $book_id . '" class="btn btn-primary py-2 mt-5 text-center">Add review</a>';
+  } else {
+      echo '<p>Please log in to add a review.</p>';
+  }
+  ?>
+</div>
+
 
   <!-- review End -->
 
@@ -378,11 +335,11 @@ if (isset($_GET['book_id'])) {
   <!-- JavaScript Libraries -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="lib/wow/wow.min.js"></script>
-  <script src="lib/easing/easing.min.js"></script>
-  <script src="lib/waypoints/waypoints.min.js"></script>
-  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-  <script src="lib/parallax/parallax.min.js"></script>
+  <script src="./lib/wow/wow.min.js"></script>
+  <script src="./lib/easing/easing.min.js"></script>
+  <script src="./lib/waypoints/waypoints.min.js"></script>
+  <script src="./lib/owlcarousel/owl.carousel.min.js"></script>
+  <script src="./lib/parallax/parallax.min.js"></script>
 
   <!-- Template Javascript -->
   <script src="js/main.js"></script>

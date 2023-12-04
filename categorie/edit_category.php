@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                </ul>
           </div>
      </nav>
-
+     
      <div class="container-admin">
           <div class="container" id="admin_component">
                <h2>Edit Category</h2>

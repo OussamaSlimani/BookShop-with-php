@@ -74,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      </nav>
 
      <!-- sidebar -->
-     <!-- sidebar -->
      <nav class="sidebar">
           <div class="menu_content">
                <ul class="menu_items">
@@ -137,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                </ul>
           </div>
      </nav>
-
 
      <div class="container-admin">
           <div class="container" id="admin_component">
