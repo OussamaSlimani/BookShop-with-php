@@ -1,97 +1,24 @@
 <?php
-session_start();
-
-// Database connection parameters
+// Include database connection code here
 $DB_NAME = 'bookshop';
 $DB_USER = 'root';
 $DB_PASS = '';
 $DB_HOST = 'localhost';
 
-// PDO connection
 try {
   $pdo = new PDO("mysql:host={$DB_HOST};dbname={$DB_NAME}", $DB_USER, $DB_PASS);
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
   die("Error: " . $e->getMessage());
 }
-
-function getBookDetails($bookId)
-{
-  // Include your database connection logic here
-  global $pdo;
-
-  // Implement the query to fetch book details based on book_id
-  $query = "SELECT * FROM books WHERE book_id = :book_id";
-  $stmt = $pdo->prepare($query);
-  $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
-  $stmt->execute();
-
-  // Fetch the book details as an associative array
-  return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-// Function to calculate the total price for a specific item
-function calculateItemTotal($bookDetails, $quantity)
-{
-  return $bookDetails['price'] * $quantity;
-}
-
-// Check if the cart is empty
-$cartIsEmpty = empty($_SESSION['cart']);
-$cartItems = $cartIsEmpty ? [] : $_SESSION['cart'];
-
-
-// total price variable
-$totalPrice = 0;
-foreach ($cartItems as $bookId => $quantity) {
-  $bookDetails = getBookDetails($bookId);
-  $itemTotal = calculateItemTotal($bookDetails, $quantity);
-  $totalPrice += $itemTotal;
-}
-
 ?>
-
-<!-- Add JavaScript to handle quantity update and item removal -->
-<script>
-  function updateQuantity(bookId, change) {
-    // Send AJAX request to update the quantity in the session
-    $.ajax({
-      type: "POST",
-      url: "update_quantity.php",
-      data: {
-        book_id: bookId,
-        change: change
-      },
-      success: function(response) {
-        // Reload the page or update the specific elements as needed
-        location.reload();
-      }
-    });
-  }
-
-  function removeItem(bookId) {
-    // Send AJAX request to remove the item from the session
-    $.ajax({
-      type: "POST",
-      url: "remove_item.php",
-      data: {
-        book_id: bookId
-      },
-      success: function(response) {
-        // Reload the page or update the specific elements as needed
-        location.reload();
-      }
-    });
-  }
-</script>
-
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
-  <title>Shopping cart</title>
+  <title>ChariTeam - Free Nonprofit Website Template</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta content="" name="keywords" />
   <meta content="" name="description" />
@@ -109,14 +36,14 @@ foreach ($cartItems as $bookId => $quantity) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
   <!-- Libraries Stylesheet -->
-  <link href="../lib/animate/animate.min.css" rel="stylesheet" />
-  <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+  <link href="lib/animate/animate.min.css" rel="stylesheet" />
+  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
   <!-- Customized Bootstrap Stylesheet -->
-  <link href="../css/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- Template Stylesheet -->
-  <link href="../css/style.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -166,7 +93,7 @@ foreach ($cartItems as $bookId => $quantity) {
   ?>
   <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
     <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
-      <a href="../index.php" class="navbar-brand ms-lg-0">
+      <a href="./index.php" class="navbar-brand ms-lg-0">
         <h1 class="fw-bold text-primary m-0">ByteReads</h1>
       </a>
       <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -175,20 +102,20 @@ foreach ($cartItems as $bookId => $quantity) {
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav ms-auto p-4 p-lg-0">
           <li class="nav-item">
-            <a href="../index.php" class="nav-link active">Home</a>
+            <a href="./index.php" class="nav-link active">Home</a>
           </li>
           <li class="nav-item dropdown">
-            <a href="../categorie/categories.php" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
+            <a href="./categorie/categories.php" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
             <div class="dropdown-menu m-0">
               <?php
               foreach ($categories as $category) {
-                echo "<a href='../category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
+                echo "<a href='category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
               }
               ?>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../cart/shopping_cart.php">
+            <a class="nav-link" href="./cart/shopping_cart.php">
               <i class="bi bi-cart"></i>Shopping cart</a>
           </li>
 
@@ -204,7 +131,7 @@ foreach ($cartItems as $bookId => $quantity) {
 
           <li class="nav-item d-flex align-items-center">
             <div class="input-group">
-              <form method="GET" action="../search.php" class="form-inline my-2 my-lg-0">
+              <form method="GET" action="search.php" class="form-inline my-2 my-lg-0">
                 <div class="d-flex">
                     <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -217,94 +144,43 @@ foreach ($cartItems as $bookId => $quantity) {
     </nav>
   </div>
   <!-- ====================== Navbar End ===================== -->
+  <!-- Page Header Start -->
+  <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container text-center">
+      <h1 class="display-4 text-white animated slideInDown mb-4">
+        Search Results for "<?php echo htmlspecialchars($query); ?>"
+      </h1>
+    </div>
+  </div>
+  <!-- Page Header End -->
 
-  <!-- Shopping Card Start -->
-  <section class="container-fluid p-0 mb-5 mt-5 pt-4">
-    <div class="container py-5">
-      <div class="row d-flex justify-content-center align-items-center">
-        <div class="col">
-          <div class="card p-3 mb-3" style="border-radius: 10px">
-            <div class="card-body p-4">
-              <hr />
-
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                  <p class="mb-1 fw-bold">Shopping cart</p>
-                </div>
-              </div>
-
-              <?php if ($cartIsEmpty) : ?>
-                <p>Your shopping cart is empty.</p>
-              <?php else : ?>
-                <!-- Loop through cart items and display them -->
-                <?php foreach ($cartItems as $bookId => $quantity) : ?>
-                  <?php
-                  // Fetch book details based on book_id
-                  $bookDetails = getBookDetails($bookId);
-                  ?>
-                  <div class="card mb-3">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between">
-                        <div class="d-flex flex-row align-items-center">
-                          <div>
-                            <img src="<?php echo $bookDetails['image_path']; ?>" class="img-fluid rounded-3" alt="Shopping item" style="width: 70px" />
-                          </div>
-                          <div class="ms-3">
-                            <h4><?php echo $bookDetails['title']; ?></h4>
-                            <!-- Display additional book details as needed -->
-                            <p>Author: <?php echo $bookDetails['author']; ?></p>
-                            <p>Price: $<?php echo $bookDetails['price']; ?></p>
-                          </div>
-                        </div>
-                        <div class="d-flex flex-row align-items-center">
-                          <div class="d-flex flex-row">
-                            <!-- Add quantity handling -->
-                            <button class="btn btn-link px-2" onclick="updateQuantity(<?php echo $bookId; ?>, -1)">-</button>
-                            <input id="quantity_<?php echo $bookId; ?>" min="1" name="quantity" value="<?php echo $quantity; ?>" type="number" class="form-control form-control-sm" style="width: 50px" />
-                            <button class="btn btn-link px-2" onclick="updateQuantity(<?php echo $bookId; ?>, 1)">+</button>
-                          </div>
-                          <div>
-                            <h4 class="mb-0 px-4">$<?php echo calculateItemTotal($bookDetails, $quantity); ?></h4>
-                          </div>
-                          <!-- Add remove item functionality -->
-                          <a href="#" onclick="removeItem(<?php echo $bookId; ?>)"><i class="fas fa-trash-alt"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <?php endforeach; ?>
-                <!-- End loop -->
-              <?php endif; ?>
-
+  <!-- Display Searched Books -->
+  <div class="container" data-aos="fade-up">
+    <div class="row p-2 m-2">
+      <?php foreach ($searchedBooks as $book) : ?>
+        <div class="col-lg-3 col-md-6">
+          <div class="product">
+            <div class="product-img">
+              <img src="<?php echo str_replace('../', '', $book['image_path']); ?>" class="img-fluid" alt="" />
             </div>
-
-            <hr class="my-4" />
-
-            <div class="d-flex justify-content-between mb-4">
-              <h4 class="mb-2">Total</h4>
-              <h4 class="mb-2">$<?php echo number_format($totalPrice, 2); ?></h4>
-
-              <!-- Checkout form -->
-              <form method="POST" action="process_checkout.php">
-                <input type="hidden" name="totalPrice" value="<?php echo $totalPrice; ?>">
-                <button type="submit" class="btn btn-primary">
-                  <div class="d-flex justify-content-between">
-                    <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
-                  </div>
-                </button>
-              </form>
+            <div class="product-info">
+              <h4><?php echo $book['title']; ?></h4>
+              <p>
+                <span style="text-decoration: line-through; color: red"><?php echo $book['price']; ?> TND</span>
+                <span style="color: green"><?php echo round($book['price'] - ($book['price'] / $book['promo']), 2); ?> TND</span>
+              </p>
+              <a class="btn btn-primary py-2 px-2 mb-2" href="">
+                Add to cart
+              </a>
             </div>
-
           </div>
         </div>
-      </div>
+      <?php endforeach; ?>
     </div>
-  </section>
-  <!-- Shopping Card End -->
+  </div>
 
-
-  <!-- Footer Start -->
-  <div class="container-fluid bg-dark text-white-50 footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+ <!-- Footer Start -->
+ <div class="container-fluid bg-dark text-white-50 footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
       <div class="row g-5">
         <div class="col-lg-3 col-md-6">
@@ -368,14 +244,14 @@ foreach ($cartItems as $bookId => $quantity) {
   <!-- JavaScript Libraries -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../lib/wow/wow.min.js"></script>
-  <script src="../lib/easing/easing.min.js"></script>
-  <script src="../lib/waypoints/waypoints.min.js"></script>
-  <script src="../lib/owlcarousel/owl.carousel.min.js"></script>
-  <script src="../lib/parallax/parallax.min.js"></script>
+  <script src="./lib/wow/wow.min.js"></script>
+  <script src="lib/easing/easing.min.js"></script>
+  <script src="lib/waypoints/waypoints.min.js"></script>
+  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+  <script src="lib/parallax/parallax.min.js"></script>
 
   <!-- Template Javascript -->
-  <script src="../js/main.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>
