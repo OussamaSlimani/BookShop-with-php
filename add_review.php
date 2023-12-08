@@ -173,60 +173,97 @@ $userExists = $checkUserStmt->fetchColumn();
     </div>
     <!-- Spinner End -->
 
- <!-- ====================== Navbar Start ===================== -->
+  <!-- ====================== Navbar Start ===================== -->
+  <?php
+    session_start();
+
+    if (isset($_SESSION['user_id'])) {
+      $user_id = $_SESSION['user_id'];
+    } else {
+      $user_id = "you should be logged in";
+    }
+
+    if (isset($_POST['logout'])) {
+      session_unset();
+      session_destroy();
+
+      header('Location: index.php');
+      exit();
+    }
+    if (isset($_POST['login'])) {
+      session_unset();
+      session_destroy();
+
+      header('Location: login.php');
+      exit();
+    }
+    // categories
+      $selectCategoriesSql = "SELECT * FROM categories";
+      $selectCategoriesStmt = $pdo->query($selectCategoriesSql);
+      $categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
+    $query = isset($_GET['query']) ? $_GET['query'] : '';
 
 
-  <!--  -->
-  <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
-    <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
-      <a href="index.html" class="navbar-brand ms-lg-0">
-        <h1 class="fw-bold text-primary m-0">ByteReads</h1>
-      </a>
-      <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav ms-auto p-4 p-lg-0">
-          <li class="nav-item">
-            <a href="index.html" class="nav-link active">Home</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
-            <div class="dropdown-menu m-0">
-              <?php
-              foreach ($categories as $category) {
-                echo "<a href='category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
-              }
-              ?>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="bi bi-cart"></i>Shopping cart</a>
-          </li>
+    // Your SQL query to retrieve books based on the search query
+      $searchQuery = "SELECT * FROM books WHERE title LIKE :query OR author LIKE :query";
+      $stmtSearch = $pdo->prepare($searchQuery);
+      $stmtSearch->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
+      $stmtSearch->execute();
+      $searchedBooks = $stmtSearch->fetchAll(PDO::FETCH_ASSOC);
+    ?>
+    <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
+      <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+        <a href="./index.php" class="navbar-brand ms-lg-0">
+          <h1 class="fw-bold text-primary m-0">ByteReads</h1>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav ms-auto p-4 p-lg-0">
+            <li class="nav-item">
+              <a href="./index.php" class="nav-link active">Home</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a href="./categorie/categories.php" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
+              <div class="dropdown-menu m-0">
+                <?php
+                foreach ($categories as $category) {
+                  echo "<a href='category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
+                }
+                ?>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./cart/shopping_cart.php">
+                <i class="bi bi-cart"></i>Shopping cart</a>
+            </li>
 
-          <li class="nav-item d-flex align-items-center">
-            <form method="POST" action="">
-              <?php if ($user_id != "you should be logged in") : ?>
-                <button type="submit" name="logout" class="btn btn-primary nav-link px-2 py-2">Logout</button>
-              <?php else : ?>
-                <button type="submit" name="login" class="btn btn-primary nav-link px-2 py-2">Login</button>
-              <?php endif; ?>
-            </form>
-          </li>
+            <li class="nav-item d-flex align-items-center">
+              <form method="POST" action="">
+                <?php if ($user_id != "you should be logged in") : ?>
+                  <button type="submit" name="logout" class="btn btn-primary nav-link px-2 py-2">Logout</button>
+                <?php else : ?>
+                  <button type="submit" name="login" class="btn btn-primary nav-link px-2 py-2">Login</button>
+                <?php endif; ?>
+              </form>
+            </li>
 
-          <li class="nav-item d-flex align-items-center">
-            <div class="input-group">
-              <input type="text" name="username" class="form-control" id="yourUsername" required />
-              <span class="input-group-text" id="inputGroupPrepend">
-                <i class="fa fa-search"></i></span>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
-  <!-- ====================== Navbar End ===================== -->
+            <li class="nav-item d-flex align-items-center">
+              <div class="input-group">
+                <form method="GET" action="search.php" class="form-inline my-2 my-lg-0">
+                  <div class="d-flex">
+                      <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
+                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <!-- ====================== Navbar End ===================== -->
 
   <!-- Books start -->
   <div class="container-xxl py-5" id="feature_box">

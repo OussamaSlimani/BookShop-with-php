@@ -127,11 +127,9 @@ $pdo = null;
     exit();
   }
   ?>
-
-  <!--  -->
   <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
     <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
-      <a href="index.html" class="navbar-brand ms-lg-0">
+      <a href="./index.php" class="navbar-brand ms-lg-0">
         <h1 class="fw-bold text-primary m-0">ByteReads</h1>
       </a>
       <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -140,10 +138,10 @@ $pdo = null;
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav ms-auto p-4 p-lg-0">
           <li class="nav-item">
-            <a href="index.html" class="nav-link active">Home</a>
+            <a href="./index.php" class="nav-link active">Home</a>
           </li>
           <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
+            <a href="./categorie/categories.php" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
             <div class="dropdown-menu m-0">
               <?php
               foreach ($categories as $category) {
@@ -152,12 +150,9 @@ $pdo = null;
               ?>
             </div>
           </li>
-
           <li class="nav-item">
-            <a class="nav-link" href="cart/shopping_cart.php">
-              <i class="bi bi-cart"></i>Shopping cart
-              <span class="cart-notification">0</span>
-            </a>
+            <a class="nav-link" href="./cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart</a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -172,9 +167,12 @@ $pdo = null;
 
           <li class="nav-item d-flex align-items-center">
             <div class="input-group">
-              <input type="text" name="username" class="form-control" id="yourUsername" required />
-              <span class="input-group-text" id="inputGroupPrepend">
-                <i class="fa fa-search"></i></span>
+              <form method="GET" action="search.php" class="form-inline my-2 my-lg-0">
+                <div class="d-flex">
+                    <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </div>
+              </form>
             </div>
           </li>
         </ul>
