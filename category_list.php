@@ -197,33 +197,6 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
   </div>
   <!-- Page Header End -->
 
-
-
-  <div class="container" data-aos="fade-up">
-    <div class="row p-2 m-2">
-      <h2>Book Filter</h2>
-      <form id="bookFilterForm ">
-        <div class="form-group m-2">
-          <input type="text" class="form-control" id="bookName" name="bookName" placeholder="Enter book name" />
-        </div>
-
-        <div class="form-group m-2">
-          <input type="text" class="form-control" id="author" name="author" placeholder="Enter author" />
-        </div>
-
-        <div class="form-group m-2">
-          <input type="text" class="form-control" id="publisherDate" name="publisherDate" placeholder="Enter publisher date" />
-        </div>
-
-        <div class="form-group m-2">
-          <input type="text" class="form-control" id="language" name="language" placeholder="Enter language" />
-        </div>
-        <div class="form-group m-2">
-          <button type="button" class="btn btn-primary">Apply Filter</button>
-        </div>
-      </form>
-    </div>
-  </div>
   <!-- ======= Category Start ======= -->
   <div class="container" data-aos="fade-up">
     <div class="row p-2 m-2">

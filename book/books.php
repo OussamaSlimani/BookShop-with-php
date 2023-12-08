@@ -142,6 +142,10 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
     <div class="container" id="admin_component">
       <h2>Manage Books</h2>
 
+      <!-- Add this input field where you want to place your filter -->
+      <input type="text" id="bookNameFilter" placeholder="Filter by Book Name">
+
+
       <!-- Add New Product Button -->
       <div class="mb-3">
         <a href="add_book.php" class="btn btn-primary">Add New Product</a>
@@ -215,6 +219,9 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
       sidebar.classList.remove("close");
     }
   </script>
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="ajax.js"></script>
 </body>
 
 </html>

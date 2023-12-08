@@ -139,6 +139,9 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
           <!-- Manage Products Start -->
           <div class="container" id="admin_component">
                <h2>Users Lists</h2>
+               <!-- Add this input field where you want to place your filter -->
+               <input type="text" id="userNameFilter" placeholder="Filter by Full Name">
+
 
                <!-- Add New Product Button -->
                <div class="table-responsive">
@@ -199,6 +202,14 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
                sidebar.classList.remove("close");
           }
      </script>
+
+     <head>
+          <!-- Include jQuery -->
+          <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+          <!-- Your custom JavaScript file -->
+          <script src="ajax.js"></script>
+     </head>
+
 </body>
 
 </html>

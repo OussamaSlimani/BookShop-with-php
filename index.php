@@ -280,17 +280,18 @@ $pdo = null;
   </div>
   <!-- Facts End -->
 
-  <!-- =================== New Releases Start =================== -->
+
+  <!-- =================== New Releases Discount =================== -->
   <div class="container-xxl pt-5 mt-5">
     <div class="container">
       <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px">
-        <h1 class="display-6 mb-5 text-border">New Releases</h1>
+        <h1 class="display-6 mb-5 text-border">New Releases Discount</h1>
       </div>
       <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
         <?php foreach ($books as $book) : ?>
-          <a href='details.php?book_id=<?= $book['book_id'] ?>'>
-            <div class="d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
-              <div class="product">
+          <div class="d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="product">
+              <a href='details.php?book_id=<?= $book['book_id'] ?>'>
                 <div class="product-img">
                   <img src="<?php echo str_replace('../', '', $book['image_path']); ?>" class="img-fluid" alt="" />
                 </div>
@@ -300,18 +301,19 @@ $pdo = null;
                     <span style="text-decoration: line-through; color: red"><?php echo $book['price']; ?> TND</span>
                     <span style="color: green"><?php echo round($book['price'] - ($book['price'] / $book['promo']), 2); ?> TND</span>
                   </p>
-                  <a class="btn btn-primary py-2 px-2 mb-2" onclick="addToCart(<?php echo $book['book_id']; ?>)">
-                    Add to cart
-                  </a>
                 </div>
-              </div>
+              </a>
+              <button class="btn btn-primary mb-2" onclick="addToCart(<?php echo $book['book_id']; ?>)">
+                Add to cart
+              </button>
             </div>
-          </a>
+          </div>
         <?php endforeach; ?>
       </div>
     </div>
   </div>
-  <!-- =================== New Releases End =================== -->
+  <!-- =================== New Releases Discount End =================== -->
+
 
   <!-- =================== Minimum 40% Discount Start =================== -->
   <div class="container-xxl pt-5 mt-5">
@@ -320,19 +322,24 @@ $pdo = null;
         <h1 class="display-6 mb-5 text-border">Minimum 40% Discount</h1>
       </div>
       <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
-        <?php foreach ($discountedBooks as $book) : ?>
+        <?php foreach ($discountedBooks as $discountedBook) : ?>
           <div class="d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
             <div class="product">
-              <div class="product-img">
-                <img src="<?php echo str_replace('../', '', $book['image_path']); ?>" class="img-fluid" alt="" />
-              </div>
-              <div class="product-info">
-                <h4><?php echo $book['title']; ?></h4>
-                <p><?php echo $book['promo']; ?> TND</p>
-                <a class="btn btn-primary py-2 px-2 mb-2" href="">
-                  Add to cart
-                </a>
-              </div>
+              <a href='details.php?book_id=<?= $discountedBook['book_id'] ?>'>
+                <div class="product-img">
+                  <img src="<?php echo str_replace('../', '', $discountedBook['image_path']); ?>" class="img-fluid" alt="" />
+                </div>
+                <div class="product-info">
+                  <h4><?php echo $discountedBook['title']; ?></h4>
+                  <p>
+                    <span style="text-decoration: line-through; color: red"><?php echo $discountedBook['price']; ?> TND</span>
+                    <span style="color: green"><?php echo round($discountedBook['price'] - ($discountedBook['price'] / $discountedBook['promo']), 2); ?> TND</span>
+                  </p>
+                </div>
+              </a>
+              <button class="btn btn-primary mb-2" onclick="addToCart(<?php echo $discountedBook['book_id']; ?>)">
+                Add to cart
+              </button>
             </div>
           </div>
         <?php endforeach; ?>
@@ -341,61 +348,74 @@ $pdo = null;
   </div>
   <!-- =================== Minimum 40% Discount End =================== -->
 
-  <!-- =================== Literary Genres Start =================== -->
-  <div class="container-xxl pt-5 mt-5">
-    <div class="container">
-      <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px">
-        <h1 class="display-6 mb-5 text-border">Literary Genres</h1>
-      </div>
-      <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
-        <?php foreach ($literaryGenres as $book) : ?>
-          <div class="d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
-            <div class="product">
-              <div class="product-img">
-                <img src="<?php echo str_replace('../', '', $book['image_path']); ?>" class="img-fluid" alt="" />
-              </div>
-              <div class="product-info">
-                <h4><?php echo $book['title']; ?></h4>
-                <p><?php echo $book['promo']; ?> TND</p>
-                <a class="btn btn-primary py-2 px-2 mb-2" href="">
-                  Add to cart
-                </a>
-              </div>
-            </div>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </div>
-  </div>
-  <!-- =================== Literary Genres End =================== -->
 
-  <!-- =================== Fiction Genres Start =================== -->
+  <!-- =================== Literary Genres Discount =================== -->
   <div class="container-xxl pt-5 mt-5">
     <div class="container">
       <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px">
-        <h1 class="display-6 mb-5 text-border">Fiction Genres</h1>
+        <h1 class="display-6 mb-5 text-border">Literary Genres Discount</h1>
       </div>
       <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
-        <?php foreach ($fictionGenres as $book) : ?>
+        <?php foreach ($literaryGenres as $literaryGenre) : ?>
           <div class="d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
             <div class="product">
-              <div class="product-img">
-                <img src="<?php echo str_replace('../', '', $book['image_path']); ?>" class="img-fluid" alt="" />
-              </div>
-              <div class="product-info">
-                <h4><?php echo $book['title']; ?></h4>
-                <p><?php echo $book['promo']; ?> TND</p>
-                <a class="btn btn-primary py-2 px-2 mb-2" href="">
-                  Add to cart
-                </a>
-              </div>
+              <a href='details.php?book_id=<?= $literaryGenre['book_id'] ?>'>
+                <div class="product-img">
+                  <img src="<?php echo str_replace('../', '', $literaryGenre['image_path']); ?>" class="img-fluid" alt="" />
+                </div>
+                <div class="product-info">
+                  <h4><?php echo $literaryGenre['title']; ?></h4>
+                  <p>
+                    <span style="text-decoration: line-through; color: red"><?php echo $literaryGenre['price']; ?> TND</span>
+                    <span style="color: green"><?php echo round($literaryGenre['price'] - ($literaryGenre['price'] / $literaryGenre['promo']), 2); ?> TND</span>
+                  </p>
+                </div>
+              </a>
+              <button class="btn btn-primary mb-2" onclick="addToCart(<?php echo $literaryGenre['book_id']; ?>)">
+                Add to cart
+              </button>
             </div>
           </div>
         <?php endforeach; ?>
       </div>
     </div>
   </div>
-  <!-- =================== Fiction Genres End =================== -->
+  <!-- =================== Literary Genres Discount End =================== -->
+
+
+
+  <!-- =================== Fiction Genres Discount =================== -->
+  <div class="container-xxl pt-5 mt-5">
+    <div class="container">
+      <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px">
+        <h1 class="display-6 mb-5 text-border">Fiction Genres Discount</h1>
+      </div>
+      <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
+        <?php foreach ($fictionGenres as $fictionGenre) : ?>
+          <div class="d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="product">
+              <a href='details.php?book_id=<?= $fictionGenre['book_id'] ?>'>
+                <div class="product-img">
+                  <img src="<?php echo str_replace('../', '', $fictionGenre['image_path']); ?>" class="img-fluid" alt="" />
+                </div>
+                <div class="product-info">
+                  <h4><?php echo $fictionGenre['title']; ?></h4>
+                  <p>
+                    <span style="text-decoration: line-through; color: red"><?php echo $fictionGenre['price']; ?> TND</span>
+                    <span style="color: green"><?php echo round($fictionGenre['price'] - ($fictionGenre['price'] / $fictionGenre['promo']), 2); ?> TND</span>
+                  </p>
+                </div>
+              </a>
+              <button class="btn btn-primary mb-2" onclick="addToCart(<?php echo $fictionGenre['book_id']; ?>)">
+                Add to cart
+              </button>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </div>
+  <!-- =================== Fiction Genres Discount End =================== -->
 
   <!-- =================== Sponsors Start =================== -->
   <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
