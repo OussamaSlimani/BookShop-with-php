@@ -151,8 +151,10 @@ $pdo = null;
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./cart/shopping_cart.php">
-              <i class="bi bi-cart"></i>Shopping cart</a>
+            <a class="nav-link" href="cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart
+              <span class="cart-notification">0</span>
+            </a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -169,8 +171,8 @@ $pdo = null;
             <div class="input-group">
               <form method="GET" action="search.php" class="form-inline my-2 my-lg-0">
                 <div class="d-flex">
-                    <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                  <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </div>
               </form>
             </div>
