@@ -91,7 +91,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
                     <!-- End -->
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#"> <i class="bi bi-card-list me-2"></i>Category</a>
+                         <a href="../categorie/categories.php"> <i class="bi bi-card-list me-2"></i>Category</a>
                     </li>
                     <!-- End -->
                </ul>
@@ -100,7 +100,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
                          <h4>Users</h4>
                     </div>
                     <li class="item me-2 p-2 m-2">
-                         <a href="#"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
+                         <a href="../user/users.php"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
                     </li>
                </ul>
 
@@ -110,7 +110,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#">
+                         <a href="../slider/sliders.php">
                               <i class="bi bi-card-image me-2"></i>Choose pictures
                          </a>
                     </li>
@@ -122,7 +122,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#">
+                         <a href="../command/commands.php">
                               <i class="bi bi-bag-fill me-2"></i>Clients commands
                          </a>
                     </li>
@@ -132,7 +132,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
                     <div class="menu_title mt-4"></div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2 fw-bold">
-                         <a href="#"> <i class="bi bi-arrow-left me-2"></i>Home </a>
+                         <a href="../index.php"> <i class="bi bi-arrow-left me-2"></i>Home </a>
                     </li>
                     <!-- End -->
                </ul>

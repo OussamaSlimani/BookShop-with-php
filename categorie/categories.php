@@ -118,7 +118,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#">
+                         <a href="../command/commands.php">
                               <i class="bi bi-bag-fill me-2"></i>Clients commands
                          </a>
                     </li>

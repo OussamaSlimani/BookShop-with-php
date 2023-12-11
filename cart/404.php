@@ -29,36 +29,32 @@
     />
 
     <!-- Libraries Stylesheet -->
-    <link href="../lib/animate/animate.min.css" rel="stylesheet" />
-    <link
-      href="../lib/owlcarousel/assets/owl.carousel.min.css"
-      rel="stylesheet"
-    />
+    <link href="lib/animate/animate.min.css" rel="stylesheet" />
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Template Stylesheet -->
     <link href="../css/style.css" rel="stylesheet" />
   </head>
 
   <body>
+    <!-- 404 Start -->
     <div class="container-xxl py-5 wow fadeInUp mt-5" data-wow-delay="0.1s">
       <div class="container text-center">
         <div class="row justify-content-center">
           <div class="col-lg-6">
-            <i class="bi bi-check-circle display-1 text-success"></i>
-            <h1 class="display-1">Success</h1>
-            <h1 class="mb-4">Shopping Operation Completed</h1>
+            <i class="bi bi-exclamation-triangle display-1 text-primary"></i>
+            <h1 class="display-1">404</h1>
+            <h1 class="mb-4">Page Not Found</h1>
             <p class="mb-4">
-              Congratulations, your book has been successfully added to your
-              cart and the transaction is complete! For more shopping, explore
-              our collection or check your cart.
+              User isn't signed in
             </p>
-            <a class="btn btn-outline-success py-2 px-3" href="../index.php">
-              Go to Home
+            <a class="btn btn-outline-primary py-2 px-3" href="">
+              Go Back To Home
               <div
-                class="d-inline-flex btn-sm-square bg-success text-white rounded-circle ms-2"
+                class="d-inline-flex btn-sm-square bg-primary text-white rounded-circle ms-2"
               >
                 <i class="fa fa-arrow-right"></i>
               </div>
@@ -67,18 +63,18 @@
         </div>
       </div>
     </div>
-    <!-- Successful Operation End -->
+    <!-- 404 End -->
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../lib/wow/wow.min.js"></script>
-    <script src="../lib/easing/easing.min.js"></script>
-    <script src="../lib/waypoints/waypoints.min.js"></script>
-    <script src="../lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="../lib/parallax/parallax.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/parallax/parallax.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="../js/main.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>

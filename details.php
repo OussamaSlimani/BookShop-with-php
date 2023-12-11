@@ -238,9 +238,9 @@ if (isset($_GET['book_id'])) {
 
               <div class="d-flex align-items-center mb-3">
                 <!-- Add to Cart Button -->
-                <a href="#" class="btn btn-primary animated slideInLeft" onclick="addToCart()">
-                  Add to Cart
-                </a>
+                <button class="btn btn-primary mb-2" onclick="addToCart(<?php echo $book['book_id']; ?>)">
+                  Add to cart
+                </button>
               </div>
             </div>
           </div>

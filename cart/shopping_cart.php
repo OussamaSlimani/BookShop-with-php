@@ -40,7 +40,6 @@ function calculateItemTotal($bookDetails, $quantity)
 $cartIsEmpty = empty($_SESSION['cart']);
 $cartItems = $cartIsEmpty ? [] : $_SESSION['cart'];
 
-
 // total price variable
 $totalPrice = 0;
 foreach ($cartItems as $bookId => $quantity) {
@@ -275,6 +274,7 @@ foreach ($cartItems as $bookId => $quantity) {
                 <?php endforeach; ?>
                 <!-- End loop -->
               <?php endif; ?>
+              
 
             </div>
 
