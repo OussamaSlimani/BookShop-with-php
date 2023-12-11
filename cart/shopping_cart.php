@@ -15,6 +15,10 @@ try {
   die("Error: " . $e->getMessage());
 }
 
+$selectCategoriesSql = "SELECT * FROM categories";
+$selectCategoriesStmt = $pdo->query($selectCategoriesSql);
+$categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
+
 function getBookDetails($bookId)
 {
   // Include your database connection logic here
@@ -161,14 +165,14 @@ foreach ($cartItems as $bookId => $quantity) {
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav ms-auto p-4 p-lg-0">
           <li class="nav-item">
-            <a href="./index.php" class="nav-link active">Home</a>
+            <a href="../index.php" class="nav-link active">Home</a>
           </li>
           <li class="nav-item dropdown">
-            <a href="./categorie/categories.php" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
+            <a href="" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
             <div class="dropdown-menu m-0">
               <?php
               foreach ($categories as $category) {
-                echo "<a href='category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
+                echo "<a href='../category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
               }
               ?>
             </div>

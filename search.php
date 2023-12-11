@@ -11,6 +11,19 @@ try {
 } catch (PDOException $e) {
   die("Error: " . $e->getMessage());
 }
+
+$selectCategoriesSql = "SELECT * FROM categories";
+$selectCategoriesStmt = $pdo->query($selectCategoriesSql);
+$categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$query = isset($_GET['query']) ? $_GET['query'] : '';
+
+// Your SQL query to retrieve books based on the search query
+$searchQuery = "SELECT * FROM books WHERE title LIKE :query OR author LIKE :query";
+$stmtSearch = $pdo->prepare($searchQuery);
+$stmtSearch->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
+$stmtSearch->execute();
+$searchedBooks = $stmtSearch->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

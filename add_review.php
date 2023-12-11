@@ -14,6 +14,9 @@ try {
   die("Error: " . $e->getMessage());
 }
 
+$selectCategoriesSql = "SELECT * FROM categories";
+$selectCategoriesStmt = $pdo->query($selectCategoriesSql);
+$categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
 
 session_start();
 
