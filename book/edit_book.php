@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
      $updatedAuthor = $_POST['author'];
      $updatedPublisherDate = $_POST['publisher_date'];
      $updatedLanguage = $_POST['language'];
-     $updatedNoOfPages = $_POST['no_of_pages'];
+     $updatedNoOfPages = $_POST['no_of_Pages'];
      $updatedPrice = $_POST['price'];
      $updatedPromo = $_POST['promo'];
      $updatedQuantity = $_POST['quantity'];
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
         author = :author,
         publisher_date = :publisher_date,
         language = :language,
-        no_of_pages = :no_of_pages,
+        no_of_Pages = :no_of_pages,
         price = :price,
         promo = :promo,
         quantity = :quantity,
@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
                     <!-- Number of Pages Field -->
                     <div class="form-group">
                          <label>Number of Pages</label>
-                         <input type="text" name="no_of_pages" class="form-control" value="<?= htmlspecialchars($bookDetails['no_of_pages']) ?>" required />
+                         <input type="text" name="no_of_Pages" class="form-control" value="<?= htmlspecialchars($bookDetails['no_of_Pages']) ?>" required />
                     </div>
 
                     <!-- Price Field -->
