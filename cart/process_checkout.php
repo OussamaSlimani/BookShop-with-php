@@ -52,16 +52,10 @@ if (isset($_SESSION['user_id'])) {
                     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
                     $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
                     $stmt->execute();
-               } else {
-                    // Handle the case where the book_id does not exist
-                    echo "Book with ID $bookId does not exist.";
                }
           }
 
-          // Clear the shopping cart
           unset($_SESSION['cart']);
-
-          // Redirect the user to checkout_success.php
           header('Location: success.html');
           exit();
      } else {
@@ -69,7 +63,6 @@ if (isset($_SESSION['user_id'])) {
           echo "Invalid request.";
      }
 } else {
-     // Redirect to 404 page or another appropriate page
      header('Location: 404.html');
      exit();
 }

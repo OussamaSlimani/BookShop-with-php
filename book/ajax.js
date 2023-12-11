@@ -1,15 +1,14 @@
 $(document).ready(function () {
   // Function to handle filtering based on book name
   function filterBooks() {
-    var bookName = $("#bookNameFilter").val(); // Assuming you have an input with id 'bookNameFilter'
+    var bookName = $("#bookNameFilter").val();
 
     // Make an AJAX request to fetch filtered data
     $.ajax({
-      url: "filter_books.php", // Create a new PHP file for handling the AJAX request
+      url: "filter_books.php",
       method: "POST",
       data: { bookName: bookName },
       success: function (data) {
-        // Update the table body with the filtered data
         $("tbody").html(data);
       },
       error: function (xhr, status, error) {

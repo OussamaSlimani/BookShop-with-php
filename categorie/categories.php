@@ -12,6 +12,23 @@ try {
      die("Error: " . $e->getMessage());
 }
 
+// Check if the user is logged in and is an administrator
+session_start();
+if (!isset($_SESSION['user_id'])) {
+     header("Location: login.php");
+     exit();
+}
+
+$stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Check if the user is an administrator
+if ($row["is_admin"] != 1) {
+     header("Location: ../unauthorized.php");
+     exit();
+}
+
 // Fetch data with pagination
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $limit = 10; // Number of rows per page
@@ -82,11 +99,10 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                     <li class="item me-2 p-2 m-2 active">
                          <a href="../book/books.php">
                               <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
-                         </a>
                     </li>
                     <!-- End -->
                     <!-- Start -->
-                    <li class="item me-2 p-2 m-2">
+                    <li class="admin-active item me-2 p-2 m-2">
                          <a href="categories.php"> <i class="bi bi-card-list me-2"></i>Categories</a>
                     </li>
                     <!-- End -->
@@ -174,23 +190,23 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
                </div>
 
                <!-- Pagination Section -->
-              <!-- Pagination Section -->
                <!-- Pagination Section -->
-                    <nav aria-label="Page navigation example">
-                         <ul class="pagination justify-content-end">
-                              <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                                   <a class="page-link" href="<?= $page <= 1 ? '#' : '?page=' . ($page - 1) ?>" tabindex="-1">Previous</a>
+               <!-- Pagination Section -->
+               <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                         <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                              <a class="page-link" href="<?= $page <= 1 ? '#' : '?page=' . ($page - 1) ?>" tabindex="-1">Previous</a>
+                         </li>
+                         <?php for ($i = 1; $i <= ceil($totalRows / $limit); $i++) : ?>
+                              <li class="page-item <?= $page == $i ? 'active' : '' ?>">
+                                   <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
                               </li>
-                              <?php for ($i = 1; $i <= ceil($totalRows / $limit); $i++) : ?>
-                                   <li class="page-item <?= $page == $i ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                                   </li>
-                              <?php endfor; ?>
-                              <li class="page-item <?= $page >= ceil($totalRows / $limit) ? 'disabled' : '' ?>">
-                                   <a class="page-link" href="<?= $page >= ceil($totalRows / $limit) ? '#' : '?page=' . ($page + 1) ?>">Next</a>
-                              </li>
-                         </ul>
-                    </nav>
+                         <?php endfor; ?>
+                         <li class="page-item <?= $page >= ceil($totalRows / $limit) ? 'disabled' : '' ?>">
+                              <a class="page-link" href="<?= $page >= ceil($totalRows / $limit) ? '#' : '?page=' . ($page + 1) ?>">Next</a>
+                         </li>
+                    </ul>
+               </nav>
 
           </div>
           <!-- Admin Dashboard End -->

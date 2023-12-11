@@ -26,11 +26,9 @@ if (isset($_GET['book_id'])) {
      $bookDetails = $selectBookStmt->fetch(PDO::FETCH_ASSOC);
 
      if (!$bookDetails) {
-          echo "Book not found!";
           exit;
      }
 } else {
-     echo "Book ID not provided!";
      exit;
 }
 
@@ -146,15 +144,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
                          <h4 class="mt-4">Dahsboard</h4>
                     </div>
                     <!-- Start -->
-                    <li class="item me-2 p-2 m-2 active">
-                         <a href="#">
-                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Product
-                         </a>
+                    <li class="admin-active item me-2 p-2 m-2 active">
+                         <a href="./books.php">
+                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
                     </li>
                     <!-- End -->
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#"> <i class="bi bi-card-list me-2"></i>Category</a>
+                         <a href="../categorie/categories.php"> <i class="bi bi-card-list me-2"></i>Categories</a>
                     </li>
                     <!-- End -->
                </ul>
@@ -163,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
                          <h4>Users</h4>
                     </div>
                     <li class="item me-2 p-2 m-2">
-                         <a href="#"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
+                         <a href="../user/users.php"> <i class="bi bi-people-fill me-2"></i>Users lists </a>
                     </li>
                </ul>
 
@@ -173,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#">
+                         <a href="../slider/sliders.php">
                               <i class="bi bi-card-image me-2"></i>Choose pictures
                          </a>
                     </li>
@@ -185,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#">
+                         <a href="../command/commands.php">
                               <i class="bi bi-bag-fill me-2"></i>Clients commands
                          </a>
                     </li>
@@ -195,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
                     <div class="menu_title mt-4"></div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2 fw-bold">
-                         <a href="#"> <i class="bi bi-arrow-left me-2"></i>Home </a>
+                         <a href="../index.php"> <i class="bi bi-arrow-left me-2"></i>Home </a>
                     </li>
                     <!-- End -->
                </ul>
@@ -283,10 +280,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
                          <label>Quantity</label>
                          <input type="number" name="quantity" class="form-control" value="<?= htmlspecialchars($bookDetails['quantity']) ?>" required />
                     </div>
+
+                    <!-- Hidden Input -->
+                    <input type="hidden" name="book_id" value="<?= htmlspecialchars($bookDetails['book_id']) ?>" />
+
                </div>
                <div>
                     <!-- Reset and Submit Buttons -->
-                    <input type="reset" class="btn btn-default" value="Cancel" />
                     <input type="submit" class="btn btn-success" value="Update Book" name="edit_book" />
                </div>
           </form>

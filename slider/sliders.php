@@ -12,6 +12,23 @@ try {
      die("Error: " . $e->getMessage());
 }
 
+// Check if the user is logged in and is an administrator
+session_start();
+if (!isset($_SESSION['user_id'])) {
+     header("Location: login.php");
+     exit();
+}
+
+$stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Check if the user is an administrator
+if ($row["is_admin"] != 1) {
+     header("Location: ../unauthorized.php");
+     exit();
+}
+
 $selectSliderSql = "SELECT * FROM sliders";
 $selectSliderStmt = $pdo->query($selectSliderSql);
 $sliders = $selectSliderStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +84,7 @@ foreach ($sliders as $slider) {
 
 <head>
      <meta charset="utf-8" />
-     <title>Categories</title>
+     <title>Sliders</title>
      <meta content="width=device-width, initial-scale=1.0" name="viewport" />
      <meta content="" name="keywords" />
      <meta content="" name="description" />
@@ -118,7 +135,6 @@ foreach ($sliders as $slider) {
                     <li class="item me-2 p-2 m-2 active">
                          <a href="../book/books.php">
                               <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
-                         </a>
                     </li>
                     <!-- End -->
                     <!-- Start -->
@@ -141,8 +157,8 @@ foreach ($sliders as $slider) {
                          <h4>Sliders</h4>
                     </div>
                     <!-- Start -->
-                    <li class="item me-2 p-2 m-2">
-                         <a href="./sliders.php">
+                    <li class="admin-active item me-2 p-2 m-2">
+                         <a href="../slider/sliders.php">
                               <i class="bi bi-card-image me-2"></i>Choose pictures
                          </a>
                     </li>
@@ -153,7 +169,7 @@ foreach ($sliders as $slider) {
                          <h4>Commands</h4>
                     </div>
                     <!-- Start -->
-                    <li class="item me-2 p-2 m-2">
+                    <li class=" item me-2 p-2 m-2">
                          <a href="../command/commands.php">
                               <i class="bi bi-bag-fill me-2"></i>Clients commands
                          </a>
@@ -191,9 +207,7 @@ foreach ($sliders as $slider) {
                               <input type="file" name="image_path" class="form-control" accept="image/*" />
                          </div>
 
-                         <div>
-                              <!-- Reset and Submit Buttons -->
-                              <input type="reset" class="btn btn-default" value="Cancel" />
+                         <div class="mt-2 mb-3 pb-2">
                               <input type="submit" class="btn btn-success" value="Update slider" name="edit_slider_<?= $slider['slider_id'] ?>" />
                          </div>
                     </div>

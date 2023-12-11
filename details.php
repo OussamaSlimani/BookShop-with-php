@@ -35,7 +35,6 @@ if (isset($_GET['book_id'])) {
   $bookDetails = $selectBookStmt->fetch(PDO::FETCH_ASSOC);
 
   if (!$bookDetails) {
-    echo "Book not found!";
     exit;
   }
 
@@ -49,7 +48,6 @@ if (isset($_GET['book_id'])) {
   $selectReviewsStmt->execute();
   $reviews = $selectReviewsStmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
-  echo "Book ID not provided!";
   exit;
 }
 ?>
@@ -119,19 +117,6 @@ if (isset($_GET['book_id'])) {
     header('Location: login.php');
     exit();
   }
-  // categories
-    $selectCategoriesSql = "SELECT * FROM categories";
-    $selectCategoriesStmt = $pdo->query($selectCategoriesSql);
-    $categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
-  $query = isset($_GET['query']) ? $_GET['query'] : '';
-
-
-  // Your SQL query to retrieve books based on the search query
-    $searchQuery = "SELECT * FROM books WHERE title LIKE :query OR author LIKE :query";
-    $stmtSearch = $pdo->prepare($searchQuery);
-    $stmtSearch->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
-    $stmtSearch->execute();
-    $searchedBooks = $stmtSearch->fetchAll(PDO::FETCH_ASSOC);
   ?>
   <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
     <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
@@ -157,8 +142,10 @@ if (isset($_GET['book_id'])) {
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./cart/shopping_cart.php">
-              <i class="bi bi-cart"></i>Shopping cart</a>
+            <a class="nav-link" href="cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart
+              <span class="cart-notification">0</span>
+            </a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -175,8 +162,8 @@ if (isset($_GET['book_id'])) {
             <div class="input-group">
               <form method="GET" action="search.php" class="form-inline my-2 my-lg-0">
                 <div class="d-flex">
-                    <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                  <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </div>
               </form>
             </div>
@@ -251,35 +238,33 @@ if (isset($_GET['book_id'])) {
   <!-- Books End -->
 
 
-<!-- Review section -->
-<div class="owl-carousel review-carousel wow fadeInUp" data-wow-delay="0.1s">
-  <?php foreach ($reviews as $review): ?>
-    <div class="review-item rounded p-4">
-      <i class="fa fa-quote-left text-primary mb-3"></i>
-      <h3 class="mb-1"><?= $review['review_headline'] ?></h3>
-      <p><?= $review['review_text'] ?></p>
-      <div class="d-flex align-items-center">
-        <div class="ps-3">
-          <h6 class="mb-1"><?= $review['full_name'] ?></h6>
+  <!-- Review section -->
+  <div class="owl-carousel review-carousel wow fadeInUp" data-wow-delay="0.1s">
+    <?php foreach ($reviews as $review) : ?>
+      <div class="review-item rounded p-4">
+        <i class="fa fa-quote-left text-primary mb-3"></i>
+        <h3 class="mb-1"><?= $review['review_headline'] ?></h3>
+        <p><?= $review['review_text'] ?></p>
+        <div class="d-flex align-items-center">
+          <div class="ps-3">
+            <h6 class="mb-1"><?= $review['full_name'] ?></h6>
+          </div>
         </div>
       </div>
-    </div>
-  <?php endforeach; ?>
-</div>
+    <?php endforeach; ?>
+  </div>
 
-<!-- Add review button -->
-<div class="d-flex justify-content-center mt-4">
-  <?php
-  // Check if the user is logged in (you need to implement the logic for this)
-  $isLoggedIn = true; // replace this with your actual check
-
-  if ($isLoggedIn) {
+  <!-- Add review button -->
+  <div class="d-flex justify-content-center mt-4">
+    <?php
+    // Check if the user is logged in
+    if (isset($_SESSION['user_id'])) {
       echo '<a href="add_review.php?user_id=' . $user_id . '&book_id=' . $book_id . '" class="btn btn-primary py-2 mt-5 text-center">Add review</a>';
-  } else {
-      echo '<p>Please log in to add a review.</p>';
-  }
-  ?>
-</div>
+    } else {
+      echo '<a href="login.php" class="btn btn-primary py-2 mt-5 text-center">Please log in to add a review.</a>';
+    }
+    ?>
+  </div>
 
 
   <!-- review End -->

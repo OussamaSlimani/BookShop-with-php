@@ -149,23 +149,10 @@ foreach ($cartItems as $bookId => $quantity) {
     header('Location: login.php');
     exit();
   }
-  // categories
-    $selectCategoriesSql = "SELECT * FROM categories";
-    $selectCategoriesStmt = $pdo->query($selectCategoriesSql);
-    $categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
-  $query = isset($_GET['query']) ? $_GET['query'] : '';
-
-
-  // Your SQL query to retrieve books based on the search query
-    $searchQuery = "SELECT * FROM books WHERE title LIKE :query OR author LIKE :query";
-    $stmtSearch = $pdo->prepare($searchQuery);
-    $stmtSearch->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
-    $stmtSearch->execute();
-    $searchedBooks = $stmtSearch->fetchAll(PDO::FETCH_ASSOC);
   ?>
   <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
     <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
-      <a href="../index.php" class="navbar-brand ms-lg-0">
+      <a href="./index.php" class="navbar-brand ms-lg-0">
         <h1 class="fw-bold text-primary m-0">ByteReads</h1>
       </a>
       <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -174,21 +161,23 @@ foreach ($cartItems as $bookId => $quantity) {
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav ms-auto p-4 p-lg-0">
           <li class="nav-item">
-            <a href="../index.php" class="nav-link active">Home</a>
+            <a href="./index.php" class="nav-link active">Home</a>
           </li>
           <li class="nav-item dropdown">
-            <a href="../categorie/categories.php" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
+            <a href="./categorie/categories.php" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Category</a>
             <div class="dropdown-menu m-0">
               <?php
               foreach ($categories as $category) {
-                echo "<a href='../category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
+                echo "<a href='category_list.php?category_id={$category['category_id']}' class='dropdown-item'>{$category['name']}</a>";
               }
               ?>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../cart/shopping_cart.php">
-              <i class="bi bi-cart"></i>Shopping cart</a>
+            <a class="nav-link" href="cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart
+              <span class="cart-notification">0</span>
+            </a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -203,10 +192,10 @@ foreach ($cartItems as $bookId => $quantity) {
 
           <li class="nav-item d-flex align-items-center">
             <div class="input-group">
-              <form method="GET" action="../search.php" class="form-inline my-2 my-lg-0">
+              <form method="GET" action="search.php" class="form-inline my-2 my-lg-0">
                 <div class="d-flex">
-                    <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                  <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </div>
               </form>
             </div>
@@ -274,7 +263,7 @@ foreach ($cartItems as $bookId => $quantity) {
                 <?php endforeach; ?>
                 <!-- End loop -->
               <?php endif; ?>
-              
+
 
             </div>
 
@@ -285,16 +274,23 @@ foreach ($cartItems as $bookId => $quantity) {
               <h4 class="mb-2">$<?php echo number_format($totalPrice, 2); ?></h4>
 
               <!-- Checkout form -->
+
+              <!-- Add review button -->
+              <div class="d-flex justify-content-center mt-4">
+
+              </div>
               <form method="POST" action="process_checkout.php">
                 <input type="hidden" name="totalPrice" value="<?php echo $totalPrice; ?>">
-                <button type="submit" class="btn btn-primary">
-                  <div class="d-flex justify-content-between">
-                    <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
-                  </div>
-                </button>
+                <?php
+                // Check if the user is logged in
+                if (isset($_SESSION['user_id'])) {
+                  echo '<button type="submit" class="btn btn-primary">Checkout</button>';
+                } else {
+                  echo '<a href="../login.php" class="btn btn-primary">Please log in to proceed with the checkout.</a>';
+                }
+                ?>
               </form>
             </div>
-
           </div>
         </div>
       </div>

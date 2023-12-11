@@ -58,15 +58,12 @@ $books = $booksStmt->fetchAll(PDO::FETCH_ASSOC);
 $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 ?>
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
-  <title>ChariTeam - Free Nonprofit Website Template</title>
+  <title>ByteReads</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta content="" name="keywords" />
   <meta content="" name="description" />
@@ -125,19 +122,6 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
     header('Location: login.php');
     exit();
   }
-  // categories
-    $selectCategoriesSql = "SELECT * FROM categories";
-    $selectCategoriesStmt = $pdo->query($selectCategoriesSql);
-    $categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
-  $query = isset($_GET['query']) ? $_GET['query'] : '';
-
-
-  // Your SQL query to retrieve books based on the search query
-    $searchQuery = "SELECT * FROM books WHERE title LIKE :query OR author LIKE :query";
-    $stmtSearch = $pdo->prepare($searchQuery);
-    $stmtSearch->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
-    $stmtSearch->execute();
-    $searchedBooks = $stmtSearch->fetchAll(PDO::FETCH_ASSOC);
   ?>
   <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
     <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
@@ -163,8 +147,10 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./cart/shopping_cart.php">
-              <i class="bi bi-cart"></i>Shopping cart</a>
+            <a class="nav-link" href="cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart
+              <span class="cart-notification">0</span>
+            </a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -181,8 +167,8 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
             <div class="input-group">
               <form method="GET" action="search.php" class="form-inline my-2 my-lg-0">
                 <div class="d-flex">
-                    <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                  <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </div>
               </form>
             </div>

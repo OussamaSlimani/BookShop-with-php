@@ -27,7 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   try {
     $stmt->execute([$fullName, $email, $hashedPassword]);
-    echo "User registered successfully!";
     header("Location: login.php");
   } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();

@@ -14,7 +14,7 @@ try {
 
 // Fetch data with pagination
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
-$limit = 10; // Number of rows per page
+$limit = 10;
 
 $offset = ($page - 1) * $limit;
 $query = "SELECT b.*, c.name AS category FROM books b

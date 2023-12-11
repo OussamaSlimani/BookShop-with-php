@@ -84,11 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="item me-2 p-2 m-2 active">
                          <a href="../book/books.php">
                               <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
-                         </a>
                     </li>
                     <!-- End -->
                     <!-- Start -->
-                    <li class="item me-2 p-2 m-2">
+                    <li class="admin-active item me-2 p-2 m-2">
                          <a href="categories.php"> <i class="bi bi-card-list me-2"></i>Categories</a>
                     </li>
                     <!-- End -->
@@ -120,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="#">
+                         <a href="../command/commands.php">
                               <i class="bi bi-bag-fill me-2"></i>Clients commands
                          </a>
                     </li>

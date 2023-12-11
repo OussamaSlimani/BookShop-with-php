@@ -54,8 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_book'])) {
 
      try {
           $insertBookStmt->execute();
-          echo "Book added successfully!";
-          // Redirect to the product list page if book_id is not provided in the URL
           header("Location: books.php");
           exit();
      } catch (PDOException $e) {
@@ -123,10 +121,9 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
                          <h4 class="mt-4">Dahsboard</h4>
                     </div>
                     <!-- Start -->
-                    <li class="item me-2 p-2 m-2 active">
-                         <a href="../book/books.php">
+                    <li class="admin-active item me-2 p-2 m-2 active">
+                         <a href="./books.php">
                               <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
-                         </a>
                     </li>
                     <!-- End -->
                     <!-- Start -->
@@ -179,7 +176,7 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
           </div>
      </nav>
 
-     <div class="container-admin">
+     <div class="container-admin mb-5">
           <!-- Manage Products Start -->
           <form action="" method="post" enctype="multipart/form-data">
                <div class="header">
@@ -237,8 +234,7 @@ $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
                          <input type="text" name="quantity" class="form-control" required />
                     </div>
                </div>
-               <div>
-                    <input type="reset" class="btn btn-default" value="Cancel" />
+               <div class="mt-4">
                     <input type="submit" class="btn btn-success" value="Add Book" name="add_book" />
                </div>
           </form>

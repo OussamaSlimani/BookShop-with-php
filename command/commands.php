@@ -12,9 +12,26 @@ try {
      die("Error: " . $e->getMessage());
 }
 
+// Check if the user is logged in and is an administrator
+session_start();
+if (!isset($_SESSION['user_id'])) {
+     header("Location: login.php");
+     exit();
+}
+
+$stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Check if the user is an administrator
+if ($row["is_admin"] != 1) {
+     header("Location: ../unauthorized.php");
+     exit();
+}
+
 // Fetch data with pagination
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
-$limit = 10; // Number of rows per page
+$limit = 10;
 
 $offset = ($page - 1) * $limit;
 $query = "SELECT c.*, u.full_name AS client_name, b.title AS book_title
@@ -85,13 +102,12 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2 active">
                          <a href="../book/books.php">
-                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Product
-                         </a>
+                              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
                     </li>
                     <!-- End -->
                     <!-- Start -->
                     <li class="item me-2 p-2 m-2">
-                         <a href="../categorie/categories.php"> <i class="bi bi-card-list me-2"></i>Category</a>
+                         <a href="../categorie/categories.php"> <i class="bi bi-card-list me-2"></i>Categories</a>
                     </li>
                     <!-- End -->
                </ul>
@@ -121,8 +137,8 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM commands")->fetchColumn();
                          <h4>Commands</h4>
                     </div>
                     <!-- Start -->
-                    <li class="item me-2 p-2 m-2">
-                         <a href="../command/commands.php">
+                    <li class="admin-active item me-2 p-2 m-2">
+                         <a href="commands.php">
                               <i class="bi bi-bag-fill me-2"></i>Clients commands
                          </a>
                     </li>

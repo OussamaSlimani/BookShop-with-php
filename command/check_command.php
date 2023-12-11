@@ -22,7 +22,6 @@ if (isset($_GET['command_id'])) {
 
      try {
           $stmt->execute();
-          // Redirect back to the page with the table after successful update
           header("Location: commands.php");
           exit();
      } catch (PDOException $e) {

@@ -11,6 +11,5 @@ if (isset($_POST['book_id']) && isset($_POST['change'])) {
      // Calculate the total items in the cart
      $cartCount = array_sum($_SESSION['cart']);
 
-     // Return the updated cart count (you can return additional information if needed)
      echo $cartCount;
 }

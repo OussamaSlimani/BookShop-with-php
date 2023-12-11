@@ -1,4 +1,5 @@
 <?php
+
 // Database connection parameters
 $DB_NAME = 'bookshop';
 $DB_USER = 'root';
@@ -11,6 +12,24 @@ try {
 } catch (PDOException $e) {
   die("Error: " . $e->getMessage());
 }
+
+// Check if the user is logged in and is an administrator
+session_start();
+if (!isset($_SESSION['user_id'])) {
+  header("Location: login.php");
+  exit();
+}
+
+$stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Check if the user is an administrator
+if ($row["is_admin"] != 1) {
+  header("Location: ../unauthorized.php");
+  exit();
+}
+
 
 // Fetch data with pagination
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -81,7 +100,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
           <h4 class="mt-4">Dahsboard</h4>
         </div>
         <!-- Start -->
-        <li class="item me-2 p-2 m-2 active">
+        <li class="admin-active item me-2 p-2 m-2 active">
           <a href="./books.php">
             <i class="bi bi-file-earmark-spreadsheet me-2"></i>Books
         </li>
@@ -146,7 +165,7 @@ $totalRows = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 
 
       <!-- Add New Product Button -->
-      <div class="mb-3">
+      <div class="mb-3 mt-2">
         <a href="add_book.php" class="btn btn-primary">Add New Product</a>
       </div>
 

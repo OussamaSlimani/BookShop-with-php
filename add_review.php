@@ -43,8 +43,6 @@ if (isset($_GET['user_id']) && isset($_GET['book_id'])) {
   $user_id = $_GET['user_id'];
   $book_id = $_GET['book_id'];
 } else {
-  // Redirect or display an error message if user_id or book_id is not provided
-  echo "User ID or Book ID not provided!";
   exit;
 }
 
@@ -59,10 +57,8 @@ $selectBookStmt->execute();
 $bookDetails = $selectBookStmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$bookDetails) {
-  echo "Book not found!";
   exit;
 }
-
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -71,13 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $review_headline = isset($_POST['review_headline']) ? $_POST['review_headline'] : null;
   $review_text = isset($_POST['review_text']) ? $_POST['review_text'] : null;
 
-
   // Validate form data (you may add more validation as needed)
   if (empty($rating) || empty($review_text) || empty($review_headline)) {
-    echo "Please fill in all the fields.";
     exit;
   }
-
 
   // Check if the user exists
   $checkUserSql = "SELECT COUNT(*) FROM users WHERE user_id = :user_id";
@@ -110,12 +103,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $insertReviewStmt->execute();
 
   try {
-    echo "Review added successfully!";
-    // Redirect to the details page of the same book
     header("Location: details.php?book_id={$book_id}");
     exit();
   } catch (PDOException $e) {
-    echo "Error adding review: " . $e->getMessage();
   }
 }
 
@@ -127,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
   <meta charset="utf-8" />
-  <title>ChariTeam - Free Nonprofit Website Template</title>
+  <title>ByteReads</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta content="" name="keywords" />
   <meta content="" name="description" />
@@ -163,41 +153,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Spinner End -->
 
   <!-- ====================== Navbar Start ===================== -->
-
+  <?php
+  session_start();
 
   if (isset($_SESSION['user_id'])) {
-  $user_id = $_SESSION['user_id'];
+    $user_id = $_SESSION['user_id'];
   } else {
-  $user_id = "you should be logged in";
+    $user_id = "you should be logged in";
   }
 
   if (isset($_POST['logout'])) {
-  session_unset();
-  session_destroy();
+    session_unset();
+    session_destroy();
 
-  header('Location: index.php');
-  exit();
+    header('Location: index.php');
+    exit();
   }
   if (isset($_POST['login'])) {
-  session_unset();
-  session_destroy();
+    session_unset();
+    session_destroy();
 
-  header('Location: login.php');
-  exit();
+    header('Location: login.php');
+    exit();
   }
-  // categories
-  $selectCategoriesSql = "SELECT * FROM categories";
-  $selectCategoriesStmt = $pdo->query($selectCategoriesSql);
-  $categories = $selectCategoriesStmt->fetchAll(PDO::FETCH_ASSOC);
-  $query = isset($_GET['query']) ? $_GET['query'] : '';
-
-
-  // Your SQL query to retrieve books based on the search query
-  $searchQuery = "SELECT * FROM books WHERE title LIKE :query OR author LIKE :query";
-  $stmtSearch = $pdo->prepare($searchQuery);
-  $stmtSearch->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
-  $stmtSearch->execute();
-  $searchedBooks = $stmtSearch->fetchAll(PDO::FETCH_ASSOC);
   ?>
   <div class="container-fluid fixed-top px-0 wow fadeIn bg-light" data-wow-delay="0.1s">
     <nav class="navbar navbar-expand-lg navbar-dark py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
@@ -223,8 +201,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./cart/shopping_cart.php">
-              <i class="bi bi-cart"></i>Shopping cart</a>
+            <a class="nav-link" href="cart/shopping_cart.php">
+              <i class="bi bi-cart"></i>Shopping cart
+              <span class="cart-notification">0</span>
+            </a>
           </li>
 
           <li class="nav-item d-flex align-items-center">
@@ -304,9 +284,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
               <div class="d-flex align-items-center mb-3">
                 <!-- Add to Cart Button -->
-                <a href="#" class="btn btn-primary animated slideInLeft" onclick="addToCart()">
-                  Add to Cart
-                </a>
+                <button class="btn btn-primary mb-2" onclick="addToCart(<?php echo $book['book_id']; ?>)">
+                  Add to cart
+                </button>
               </div>
             </div>
           </div>
@@ -428,6 +408,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Template Javascript -->
   <script src="js/main.js"></script>
+  <script>
+    function addToCart(bookId) {
+      // Send AJAX request to add the item to the cart
+      $.ajax({
+        type: "POST",
+        url: "cart/add_to_cart.php", // Create this file to handle the server-side logic
+        data: {
+          book_id: bookId
+        },
+        success: function(response) {
+          // Update the cart icon notification
+          updateCartNotification(response);
+        }
+      });
+    }
+
+    function updateCartNotification(count) {
+      // Update the notification bubble on the cart icon
+      // You can use your preferred method to update the notification (e.g., jQuery)
+      $(".cart-notification").text(count);
+    }
+  </script>
+
+
 </body>
 
 </html>
